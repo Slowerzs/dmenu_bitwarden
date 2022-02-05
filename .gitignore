@@ -1,0 +1,5 @@
+.vscode/settings.json
+.pylintrc
+.env
+__pycache__/bitwarden.cpython-310.pyc
+__pycache__/notification.cpython-310.pyc
