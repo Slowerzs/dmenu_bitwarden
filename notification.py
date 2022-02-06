@@ -1,6 +1,7 @@
 """wrapper for notify-send"""
 from subprocess import CalledProcessError, run
 
+
 def notify(title: str, message: str) -> None:
     """Sends a notification using notify-send"""
 

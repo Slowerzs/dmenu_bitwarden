@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 
+
 class BitWarden:
     """
     Class with methods wrapping bitwarden cli interface
@@ -68,7 +69,7 @@ class BitWarden:
 
         for item in data:
 
-            if item.get('folderId') is not None and item['folderId'] not in self.folders:
+            if item.get('folderId') and item['folderId'] not in self.folders:
                 self.get_folders()
 
             if item.get('folderId') is None:
@@ -83,7 +84,6 @@ class BitWarden:
         creds = sorted(creds, key=lambda i: i[0].lower())
 
         return creds
-
 
     def unlock(self, password: str) -> bool:
         """wrapper for bw unlock"""
@@ -102,7 +102,6 @@ class BitWarden:
         self.is_unlocked = True
 
         return True
-
 
     def lock(self) -> bool:
         """wrapper for bw lock"""
