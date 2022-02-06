@@ -11,5 +11,3 @@ def notify(title: str, message: str) -> None:
         run(cmd, check=True)
     except CalledProcessError:
         print("Error sending notification using notify-send")
-
-    return
