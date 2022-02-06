@@ -92,9 +92,7 @@ class BitWarden:
 
         try:
             unlock = subprocess.run(cmd, capture_output=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e)
-            print(e.stderr)
+        except subprocess.CalledProcessError:
             self.is_unlocked = False
             return False
 
