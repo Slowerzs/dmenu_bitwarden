@@ -55,8 +55,8 @@ class Server:
             assert proc.stdin is not None
             assert proc.stdout is not None
 
-            with proc.stdin as f:
-                f.write('')
+            with proc.stdin as fd_stdin:
+                fd_stdin.write('')
 
             proc.wait()
             password = proc.stdout.read().rstrip('\n')
@@ -85,9 +85,9 @@ class Server:
             assert proc.stdin is not None
             assert proc.stdout is not None
 
-            with proc.stdin as f:
+            with proc.stdin as fd_stdin:
                 for item in items:
-                    f.write(f'{item[0]}\n')
+                    fd_stdin.write(f'{item[0]}\n')
 
             proc.wait()
 
@@ -101,7 +101,8 @@ class Server:
             if password is None:
                 return
 
-            open(LOCK_PATH, 'ab').close()
+            with open(LOCK_PATH, 'ab'):
+                pass
 
             self.copy(password)
             sleep(FLUSH_TIME)
