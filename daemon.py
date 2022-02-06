@@ -16,6 +16,7 @@ from bitwarden import BitWarden
 
 SOCK_PATH = "/tmp/bitwarden.sock"
 
+
 class Server:
     """Background server waiting for messages on unix socket"""
 
@@ -28,11 +29,10 @@ class Server:
 
         cmd_copy = ["xclip", "-selection", "c"]
         with subprocess.Popen(cmd_copy,
-                stdin=subprocess.PIPE,
-                close_fds=True) as proc:
+                              stdin=subprocess.PIPE,
+                              close_fds=True) as proc:
 
             proc.communicate(input=text.encode('UTF-8'))
-
 
     @staticmethod
     def get_password() -> str:
@@ -47,10 +47,10 @@ class Server:
         ]
 
         with subprocess.Popen(cmd,
-                universal_newlines=True,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE) as proc:
+                              universal_newlines=True,
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE) as proc:
 
             assert proc.stdin is not None
             assert proc.stdout is not None
@@ -77,10 +77,10 @@ class Server:
         ]
 
         with subprocess.Popen(cmd_list,
-                universal_newlines=True,
-                stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE) as proc:
+                              universal_newlines=True,
+                              stderr=subprocess.PIPE,
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE) as proc:
 
             assert proc.stdin is not None
             assert proc.stdout is not None
@@ -127,7 +127,7 @@ class Server:
                 print("Logging in....")
 
                 if not self.bitwarden.is_unlocked:
-                   
+
                     password = os.environ.get("BW_PASSWORD")
                     if password is None:
                         password = self.get_password()
@@ -138,9 +138,7 @@ class Server:
                         notify("Bitwarden Dmenu", "Error in password")
                         continue
 
-
                 Thread(target=self.copy_password).start()
-
 
             elif data == b"CLOSE":
                 print("Locking...")
@@ -196,4 +194,3 @@ if __name__ == "__main__":
 
     s = Server()
     s.run()
-    
