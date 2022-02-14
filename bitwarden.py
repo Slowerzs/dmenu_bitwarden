@@ -13,6 +13,17 @@ class BitWarden:
     def __init__(self):
         self._is_unlocked = False
         self._folders = {}
+        self._entries = []
+
+    @property
+    def entries(self):
+        "entries getter"
+        return self._entries
+
+    @entries.setter
+    def entries(self, value):
+        "entries setter"
+        self.entries = value
 
     @property
     def is_unlocked(self):
@@ -56,6 +67,9 @@ class BitWarden:
     def get_items(self) -> list:
         """Get all entries from bw list item"""
 
+        if self.entries != []:
+            return self.entries
+
         cmd = ["/usr/bin/bw", "list", "items"]
 
         try:
@@ -82,6 +96,7 @@ class BitWarden:
             creds.append((desc, item["login"]["password"]))
 
         creds = sorted(creds, key=lambda i: i[0].lower())
+        self.entries = creds
 
         return creds
 
@@ -106,6 +121,7 @@ class BitWarden:
 
         if self.is_unlocked:
             del os.environ["BW_SESSION"]
+            self.entries = []
             cmd = ["/usr/bin/bw", "lock"]
             try:
                 subprocess.run(cmd, check=True)
