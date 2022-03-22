@@ -14,6 +14,8 @@ class BitWarden:
         self._is_unlocked = False
         self._folders = {}
         self._entries = []
+        self.ssh_folder_name = "ssh-keys"
+        self.ssh_folder_id = None
 
     @property
     def entries(self):
@@ -44,6 +46,25 @@ class BitWarden:
     def folders(self, value):
         self._folders = value
 
+    @staticmethod
+    def add_ssh_key(key: str):
+        """Add a key to current agent"""
+
+        cmd = ['ssh-add', '-']
+        env = {
+            "SSH_ASKPASS_REQUIRE": "never",
+            "SSH_AUTH_SOCK": "/run/user/1000/ssh-agent.socket"
+        }
+
+        try:
+            subprocess.run(cmd, env=env, input=key, universal_newlines=True, check=True)
+        except subprocess.CalledProcessError:
+            return
+
+
+
+
+
     def get_folders(self) -> None:
         """Creates a dict linking foldersId with their names"""
 
@@ -59,7 +80,12 @@ class BitWarden:
         folders = {}
 
         for item in data:
-            folders[item["id"]] = item["name"]
+            if item.get('id'):
+                if item["name"] == self.ssh_folder_name:
+                    self.ssh_folder_id = item["id"]
+                else:
+                    folders[item["id"]] = item["name"]
+
         self.folders = folders
 
         return
@@ -82,6 +108,10 @@ class BitWarden:
         creds = []
 
         for item in data:
+
+            if item.get('folderId') == self.ssh_folder_id:
+                self.add_ssh_key(item['notes'])
+                continue
 
             if item.get('folderId') and item['folderId'] not in self.folders:
                 self.get_folders()
