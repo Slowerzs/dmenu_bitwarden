@@ -23,7 +23,7 @@ class BitWarden:
     @entries.setter
     def entries(self, value):
         "entries setter"
-        self.entries = value
+        self._entries = value
 
     @property
     def is_unlocked(self):
